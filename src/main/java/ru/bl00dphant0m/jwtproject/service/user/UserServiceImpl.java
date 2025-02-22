@@ -1,6 +1,7 @@
 package ru.bl00dphant0m.jwtproject.service.user;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import ru.bl00dphant0m.jwtproject.model.entity.User;
@@ -25,6 +26,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @PreAuthorize("hashRole('user') and #id == authentication.principal.id")
     public User findById(long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));

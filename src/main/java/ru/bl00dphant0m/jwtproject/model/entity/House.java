@@ -47,4 +47,6 @@ public class House {
         owner = user;
         user.getOwnOfHouses().add(this);
     }
+
+
 }
