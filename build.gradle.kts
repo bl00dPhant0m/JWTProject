@@ -40,7 +40,7 @@ dependencies {
 // https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-jackson
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.6")
 // https://mvnrepository.com/artifact/org.liquibase/liquibase-core
-    implementation("org.liquibase:liquibase-core:4.31.1")
+    //implementation("org.liquibase:liquibase-core:4.31.1")
     // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-devtools
     implementation("org.springframework.boot:spring-boot-devtools:3.4.2")
 }
