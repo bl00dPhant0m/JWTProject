@@ -13,6 +13,7 @@ import ru.bl00dphant0m.jwtproject.service.AutService;
 import ru.bl00dphant0m.jwtproject.service.user.UserService;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,7 +27,29 @@ public class AutController {
         User user = userService.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException(username + " not found"));
 
-        Set<String> userRoles = userService.getUserRolesByUsername(username);
+        Set<String> userRoles = userService.getUserRolesByUsername(username).stream()
+                        .map(role -> "ROLE_" + role)
+                        .collect(Collectors.toSet());
+
+
+
+        log.info(userRoles.toString());
+        return ResponseEntity.ok(autService.generateToken(username, userRoles));
+
+    }
+
+
+    @PostMapping("/login/no-token")
+    public ResponseEntity<String> getNoToken(@RequestParam String username){
+        User user = userService.findByUsernameNoToken(username)
+                .orElseThrow(() -> new UsernameNotFoundException(username + " not found"));
+
+        Set<String> userRoles = userService.getUserRolesByUsername(username).stream()
+                .map(role -> "ROLE_" + role)
+                .collect(Collectors.toSet());
+
+
+
         log.info(userRoles.toString());
         return ResponseEntity.ok(autService.generateToken(username, userRoles));
 

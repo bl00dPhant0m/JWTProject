@@ -12,6 +12,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import ru.bl00dphant0m.jwtproject.model.entity.User;
 import ru.bl00dphant0m.jwtproject.service.AutService;
 
 import java.io.IOException;
@@ -32,17 +33,21 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         try {
             String authorization = request.getHeader("Authorization");
             log.info("Authorization: " + authorization);
-            log.info("Authorization: " + authorization.substring(7));
             if (authorization != null && authorization.startsWith("Bearer ")) {
+                log.info("Authorization: " + authorization.substring(7));
                 String token = authorization.substring(7);
                 log.info("token: " + token);
+
                 Claims claims = autService.validateToken(token);
+                System.out.println(claims);
+
                 String username = claims.getSubject();
                 List<String> roles = (List<String>) claims.get("roles", List.class);
                 log.info("roles: " +   claims.get("roles", List.class).toString());
 
+                //log.info("id: " + id);
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                        username,
+                        new CustomUserPrincipal(username, roles),
                         null,
                         roles.stream().map(SimpleGrantedAuthority::new).toList()
                 );

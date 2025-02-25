@@ -16,7 +16,6 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<User> getUser(@RequestParam String username) {
-
         return ResponseEntity.ok(userService.findByUsername(username)
                 .orElseThrow(()->new RuntimeException("User not found")));
     }

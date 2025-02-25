@@ -7,7 +7,12 @@ import java.util.Set;
 
 public interface UserService {
     User save(User user);
+
     Optional<User> findByUsername(String username);
-    User findById(long id);
+
+    User findById(Long id);
+
     Set<String> getUserRolesByUsername(String username);
+
+    Optional<User> findByUsernameNoToken(String username);
 }

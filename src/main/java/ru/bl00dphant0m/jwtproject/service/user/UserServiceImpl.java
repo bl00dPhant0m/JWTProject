@@ -3,7 +3,6 @@ package ru.bl00dphant0m.jwtproject.service.user;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.bl00dphant0m.jwtproject.model.entity.User;
@@ -27,13 +26,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @PreAuthorize("hasRole('ROLE_USER') and #username == authentication.principal.username")
     public Optional<User> findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
+    @Override
+    public Optional<User> findByUsernameNoToken(String username) {
+        return userRepository.findByUsername(username);
+    }
+
 
     @Override
-    @PreAuthorize("hasRole('USER') and #id == authentication.principal.id")
-    public User findById(long id) {
+    public User findById(Long id) {
         log.info("USerServiceImpl.findById");
         return userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
