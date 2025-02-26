@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import ru.bl00dphant0m.jwtproject.model.entity.User;
@@ -27,6 +28,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     @Autowired
     private AutService autService;
 
+    @Autowired
+    private CustomUserDetailsService customUserDetailsService;
+
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -39,15 +43,15 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 log.info("token: " + token);
 
                 Claims claims = autService.validateToken(token);
-                System.out.println(claims);
 
                 String username = claims.getSubject();
-                List<String> roles = (List<String>) claims.get("roles", List.class);
-                log.info("roles: " +   claims.get("roles", List.class).toString());
+                UserDetails userPrincipal = customUserDetailsService.loadUserByUsername(username);
 
-                //log.info("id: " + id);
+                List<String> roles = (List<String>) claims.get("roles", List.class);
+                log.info("roles: " + roles);
+
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                        new CustomUserPrincipal(username, roles),
+                        userPrincipal,
                         null,
                         roles.stream().map(SimpleGrantedAuthority::new).toList()
                 );
